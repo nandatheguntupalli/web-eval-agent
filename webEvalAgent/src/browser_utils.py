@@ -10,6 +10,20 @@ from typing import Dict, Any, List, Optional
 from collections import deque
 import pathlib  # Added for file reading
 
+# Patch environment variables to ensure uppercase log levels for FastMCP compatibility
+# This prevents validation errors when BrowserUse sets lowercase log levels internally
+if 'BROWSER_USE_LOG_LEVEL' in os.environ:
+    # Convert to uppercase if it exists and isn't already uppercase
+    current_level = os.environ['BROWSER_USE_LOG_LEVEL']
+    if current_level and current_level.lower() in ['debug', 'info', 'warning', 'error', 'critical']:
+        os.environ['BROWSER_USE_LOG_LEVEL'] = current_level.upper()
+
+# Similarly handle any other log level environment variables that might conflict
+if 'LOG_LEVEL' in os.environ:
+    current_level = os.environ['LOG_LEVEL']
+    if current_level and current_level.lower() in ['debug', 'info', 'warning', 'error', 'critical']:
+        os.environ['LOG_LEVEL'] = current_level.upper()
+
 # Import log server function
 from .log_server import send_log
 

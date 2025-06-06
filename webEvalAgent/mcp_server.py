@@ -1,7 +1,19 @@
 #!/usr/bin/env python3
 
-import asyncio
+# Patch environment variables to ensure uppercase log levels for FastMCP compatibility
+# This must happen before any imports that might validate log levels
 import os
+if 'BROWSER_USE_LOG_LEVEL' in os.environ:
+    current_level = os.environ['BROWSER_USE_LOG_LEVEL']
+    if current_level and current_level.lower() in ['debug', 'info', 'warning', 'error', 'critical']:
+        os.environ['BROWSER_USE_LOG_LEVEL'] = current_level.upper()
+
+if 'LOG_LEVEL' in os.environ:
+    current_level = os.environ['LOG_LEVEL']
+    if current_level and current_level.lower() in ['debug', 'info', 'warning', 'error', 'critical']:
+        os.environ['LOG_LEVEL'] = current_level.upper()
+
+import asyncio
 import argparse
 import traceback
 import uuid
